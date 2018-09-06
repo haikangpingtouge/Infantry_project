@@ -43,9 +43,16 @@ void PID_control(motor *motor,uint8_t PID)
 
 		motor->Integral_bias += motor->Bise;
 		motor->Integral_bias=(motor->Integral_bias > (1000))?1000:motor->Integral_bias;			//限制积分
-		motor->Integral_bias=(motor->Integral_bias<(1000))?(1000):motor->Integral_bias;
+		motor->Integral_bias=(motor->Integral_bias<(-1000))?(-1000):motor->Integral_bias;
 
-        motor->pid_out = motor->Kp * motor->Bise  + motor->Ki * motor->Integral_bias + motor->Kd * (motor->Bise - motor->Last_Bise);
+
+		motor->pid_out = motor->Kp * motor->Bise  + motor->Ki * motor->Integral_bias + motor->Kd * (motor->Bise - motor->Last_Bise);
+		
+		/* ----------------- 减缓响应速度 -------------------- */
+		if(motor->Bise>500||motor->Bise<-500)
+		{
+			motor->pid_out= (int16_t)motor->pid_out/5;
+		}
         motor->Last_Bise = motor->Bise;
       break;
       case Incremental_PID:
@@ -163,3 +170,27 @@ void PID_Debug(int16_t Target,int16_t Real,UART_HandleTypeDef* huart)
     usart2_niming_report(0XA1,tbuf,4,huart);//自定义帧,0XA2
 }  
 
+
+/* -------------------------------- begin -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+void OutPIDControl(int16_t t,int16_t r,Pantiltzoom_Struct* Ps)
+{
+	Ps->PitchSpeel.Bise = -t-r;
+	Ps->PitchSpeel.Integral_bias += Ps->PitchSpeel.Bise;
+	Ps->PitchSpeel.P_out=Ps->PitchSpeel.Kp*Ps->PitchSpeel.Bise;
+	Ps->PitchSpeel.I_out=Ps->PitchSpeel.Ki*Ps->PitchSpeel.Integral_bias;
+	Ps->PitchSpeel.D_out=Ps->PitchSpeel.Kd*(Ps->PitchSpeel.Bise-Ps->PitchSpeel.Last_Bise);
+	
+
+	Ps->PitchSpeel.pid_out = Ps->PitchSpeel.P_out+Ps->PitchSpeel.I_out+Ps->PitchSpeel.D_out;
+
+	Limiter(&(Ps->PitchSpeel.pid_out),2000,-2000);
+
+	Ps->PitchSpeel.Last_Bise=Ps->PitchSpeel.Bise;
+
+}

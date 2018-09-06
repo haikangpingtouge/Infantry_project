@@ -39,4 +39,5 @@ dubus\stm32f4xx_it.o: ..\User\Chassis.h
 dubus\stm32f4xx_it.o: ..\User\Driver_DBUS.h
 dubus\stm32f4xx_it.o: ..\User\base_class.h
 dubus\stm32f4xx_it.o: ..\User\PanTiltZoom.h
+dubus\stm32f4xx_it.o: ..\User\GY955.h
 dubus\stm32f4xx_it.o: ..\User\Controller.h

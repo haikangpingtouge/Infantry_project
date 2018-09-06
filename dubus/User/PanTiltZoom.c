@@ -1,8 +1,10 @@
 #include "PanTiltZoom.h"
 Pantiltzoom_Struct Ps; //云台对象
+
 LIMIT LtPit;   //纵轴继承  比较对象
 LIMIT LtYaw;  //横轴继承    比较对象类
 static float *pid_list[6];  //PID列表
+extern GY955_Class Gyc;
 // /* -------------------------------- begin -------------------------------- */
 // /**
 //   * @brief  构造函数
@@ -30,7 +32,7 @@ void PanTiltZoom_Init(void)
 /*---------云台公有数据初始化-------------*/
     Ps.Pitch.Bise=0;
     Ps.Pitch.Integral_bias=0;           //云台PID列表初始化
-    Ps.Pitch.Kp=0;                      pid_list[0]=&Ps.Pitch.Kp; 
+    Ps.Pitch.Kp=5;                      pid_list[0]=&Ps.Pitch.Kp; 
     Ps.Pitch.Ki=0;                      pid_list[1]=&Ps.Pitch.Ki;
     Ps.Pitch.Kd=0;                      pid_list[2]=&Ps.Pitch.Kd;
     Ps.Pitch.Last_Bise=0;
@@ -46,7 +48,7 @@ void PanTiltZoom_Init(void)
 
     Ps.Yaw.Bise=0;
     Ps.Yaw.Integral_bias=0;           //云台PID列表初始化
-    Ps.Yaw.Kp=0;                        pid_list[3]=&Ps.Yaw.Kp;
+    Ps.Yaw.Kp=5;                        pid_list[3]=&Ps.Yaw.Kp;
     Ps.Yaw.Ki=0;                        pid_list[4]=&Ps.Yaw.Ki;
     Ps.Yaw.Kd=0;                        pid_list[5]=&Ps.Yaw.Kd;
     Ps.Yaw.Last_Bise=0;
@@ -59,10 +61,26 @@ void PanTiltZoom_Init(void)
     Ps.Yaw.limit->max=3000;
 	Ps.Yaw.limit->min=-3000;
 	Ps.Yaw.counter= 0;
+
+	Ps.PitchSpeel.pid_out=0;
+	Ps.PitchSpeel.Kp=0;
+	Ps.PitchSpeel.Ki=0;
+	Ps.PitchSpeel.Kd=0;
+	Ps.PitchSpeel.Bise=0;
+	Ps.PitchSpeel.Last_Bise=0;
+	Ps.PitchSpeel.Integral_bias=0;
+	Ps.PitchSpeel.before_last_bias=0;
+	Ps.PitchSpeel.P_out=0;
+	Ps.PitchSpeel.I_out=0;
+	Ps.PitchSpeel.D_out=0;
+
 		
 		Ps.P=0;
 		Ps.Y=0;
 		Ps.motor_id=0x1FF;
+
+		/* ----------------- 继承陀螺仪 -------------------- */
+		Ps.Gyc=&Gyc;
 
 /* ----------------- 云台成员函数初始化 -------------------- */
     Ps.PIDConnector=PIDConnector;
@@ -198,4 +216,20 @@ static void PIDConnector(uint8_t mode,float p,float i,float d)
     *pid_list[mode]=p;
     *pid_list[mode+1]=i;
     *pid_list[mode+2]=d;
+}
+
+
+/* -------------------------------- begin -------------------------------- */
+	/**
+	* @brief  自动打神符云台控制
+	* @param  目标角度
+	* @retval void
+	**/
+/* -------------------------------- end -------------------------------- */
+uint8_t RuneController(uint8_t *groal)
+{
+	Ps.Pitch.target = 3700+((groal[0]-90)*22);
+	Ps.Yaw.target = 4266+((groal[1]-90)*22); 
+
+	return 0;
 }

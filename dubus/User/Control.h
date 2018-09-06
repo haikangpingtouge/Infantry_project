@@ -21,4 +21,7 @@ void Control_Chassis_PI(Chassis_Struct* _Chassis);
 void Control_PTZ_PID(Pantiltzoom_Struct* This);
 void DUBS_Data_RX(BASE* This,DBUSDecoding_Type *data);
 void CAN_TRANSMIT(CAN_HandleTypeDef* hcan,int STD_ID,int Letter0,int Letter1,int Letter2,int Letter3);
+
+void FRune(void);
+void CHUANKOU(void);
 #endif // !CONTROL_H

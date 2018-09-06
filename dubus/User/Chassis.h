@@ -18,6 +18,7 @@ typedef struct
 	  int16_t max;
 	  int16_t min;
 
+
 /* ----------------- 定义成员函数 -------------------- */
 
     void (*PIDConnector)(uint8_t mode,float p,float i,float d);

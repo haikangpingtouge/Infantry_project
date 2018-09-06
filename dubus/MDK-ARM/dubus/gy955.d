@@ -1,7 +1,5 @@
 dubus\gy955.o: ..\User\GY955.c
 dubus\gy955.o: ..\User\GY955.h
-dubus\gy955.o: ..\User\Chassis.h
-dubus\gy955.o: ..\User\Driver_DBUS.h
 dubus\gy955.o: ..\User\base_class.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
 dubus\gy955.o: ..\Inc\stm32f4xx_hal_conf.h
@@ -35,4 +33,4 @@ dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
-dubus\gy955.o: ..\User\PanTiltZoom.h
+dubus\gy955.o: ..\User\Driver_DBUS.h

@@ -52,12 +52,14 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
+UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart3_rx;
+DMA_HandleTypeDef hdma_usart6_rx;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+extern uint8_t aff;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,6 +71,7 @@ static void MX_CAN1_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
+static void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -114,6 +117,7 @@ int main(void)
   MX_TIM7_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
       User_config();//用户初始化函数
 			HAL_Delay(50);
@@ -126,7 +130,12 @@ int main(void)
   {
 
   /* USER CODE END WHILE */
-
+		if(aff==1)
+		{
+				CHUANKOU();
+			aff=0;
+		}
+	
   /* USER CODE BEGIN 3 */
 
   }
@@ -302,6 +311,25 @@ static void MX_USART3_UART_Init(void)
 
 }
 
+/* USART6 init function */
+static void MX_USART6_UART_Init(void)
+{
+
+  huart6.Instance = USART6;
+  huart6.Init.BaudRate = 115200;
+  huart6.Init.WordLength = UART_WORDLENGTH_8B;
+  huart6.Init.StopBits = UART_STOPBITS_1;
+  huart6.Init.Parity = UART_PARITY_NONE;
+  huart6.Init.Mode = UART_MODE_TX_RX;
+  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart6) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
 /** 
   * Enable DMA controller clock
   */
@@ -315,6 +343,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+  /* DMA2_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
   /* DMA2_Stream2_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
@@ -331,11 +362,24 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
 
+  GPIO_InitTypeDef GPIO_InitStruct;
+
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PG13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 }
 

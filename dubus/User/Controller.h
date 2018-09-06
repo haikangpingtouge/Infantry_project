@@ -14,4 +14,5 @@ float myabs(float a);
 void usart2_send_char(uint8_t c,UART_HandleTypeDef* huart);
 void usart2_niming_report(uint8_t fun,uint8_t*data,uint8_t len,UART_HandleTypeDef* huart);
 void PID_Debug(int16_t Target,int16_t Real,UART_HandleTypeDef* huart);
+void OutPIDControl(int16_t target,int16_t real,Pantiltzoom_Struct* Ps);
 #endif // ! __ONTROLLER_H

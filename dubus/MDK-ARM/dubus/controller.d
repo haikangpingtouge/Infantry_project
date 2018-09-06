@@ -36,3 +36,4 @@ dubus\controller.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h
 dubus\controller.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 dubus\controller.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
 dubus\controller.o: ..\User\PanTiltZoom.h
+dubus\controller.o: ..\User\GY955.h

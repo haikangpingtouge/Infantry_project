@@ -27,18 +27,41 @@ typedef struct
 	float           Last_Bise; 
     float           Integral_bias; 
 	float             before_last_bias;
-    LIMIT*          limit;   
-  	uint16_t       counter;     			//帧率计数器
-    // uint16_t    FrameRate;        			//帧率
+	LIMIT*          limit;   
+	// uint16_t    FrameRate;        			//帧率
+	uint16_t       counter;     			//帧率计数器
+
+
 }motor;
+
+typedef struct
+{
+	float           P_out;
+	float           I_out;
+	float           D_out;
+	int16_t         pid_out; 
+	float        	 Kp;
+	float       	Ki;
+	float   		Kd;
+	float           Bise;
+	float           Last_Bise; 
+	float           Integral_bias;
+	float           before_last_bias;
+}PIDCLASS;
+
+
 
 
 typedef struct
 {
 	uint32_t aa;
 	uint32_t bb;
+
+
 }Time_Counter;
 #define L_Motor_Id ((uint16_t)0x200)//1到4电机
 #define H_Motor_Id ((uint16_t)0x1FF)//5到8电机 
+
+
 
 #endif

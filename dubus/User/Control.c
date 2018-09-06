@@ -1,6 +1,8 @@
 #include "Control.h"
 extern UART_HandleTypeDef huart2;
 Can_Base_Class Cbcla;
+uint8_t groal[2]={90,90};
+int aff=0;
 
 /* -------------------------------- begin -------------------------------- */
 /**
@@ -65,7 +67,7 @@ void Control_Chassis_PI(Chassis_Struct* _Chassis)
 
    PID_control(&(_Chassis->chassis_LF),Incremental_PID);
    Limiter(&_Chassis->chassis_LF.pid_out,_Chassis->max,_Chassis->min);
-   PID_Debug(_Chassis->chassis_LF.real,_Chassis->chassis_LF.target,&huart2);
+//   PID_Debug(_Chassis->chassis_LF.real,_Chassis->chassis_LF.target,&huart2);
 
    PID_control(&(_Chassis->chassis_RB),Incremental_PID);
    Limiter(&_Chassis->chassis_RB.pid_out,_Chassis->max,_Chassis->min);
@@ -83,14 +85,25 @@ void Control_Chassis_PI(Chassis_Struct* _Chassis)
 /* -------------------------------- end -------------------------------- */
 void Control_PTZ_PID(Pantiltzoom_Struct* This)
 {
+	/* ----------------- 外环Pitch  PID -------------------- */
 //	  Limiter(&This->Pitch.target,This->Pitch.limit->max,This->Pitch.limit->min);
     PID_control(&This->Pitch,Location_PID);
    Limiter(&This->Pitch.pid_out,This->Pitch.limit->max,This->Pitch.limit->min);
+   /* ----------------- 外环Yawpid -------------------- */
 
 //   PID_Debug(This->Pitch.target,This->Pitch.pid_out,&huart2);
 
-//    PID_control(&This->Yaw,Location_PID);
-// 	 Limiter(&This->Yaw.pid_out,This->Yaw.limit->max,This->Yaw.limit->min);
+    PID_control(&This->Yaw,Location_PID);
+	  Limiter(&This->Yaw.pid_out,This->Yaw.limit->max,This->Yaw.limit->min);
+	  
+	  /* ----------------- 内环Pitch pid -------------------- */
+	  OutPIDControl(This->Pitch.pid_out,This->Gyc->Gyr_y,This);
+	This->Pitch.pid_out=This->PitchSpeel.pid_out;
+	  /* ----------------- 内环Yaw PID -------------------- */
+	OutPIDControl(This->Yaw.pid_out,This->Gyc->Gyr_z,This);
+	This->Yaw.pid_out=This->PitchSpeel.pid_out;
+	
+	
 }
 
 
@@ -152,8 +165,8 @@ void DUBS_Data_RX(BASE* This,DBUSDecoding_Type *data)
 		//底盘X、Y方向速度
 		This->ConCs->Target_Vx=data->ch2*SpeedParam;
 		This->ConCs->Target_Vy=data->ch1*SpeedParam;
-    This->ConPs->Y=data->ch3;
-    This->ConPs->P=data->ch4;
+    This->ConPs->Y=-data->ch3;
+    This->ConPs->P=-data->ch4;
 }
 
 ///* -------------------------------- begin -------------------------------- */
@@ -189,8 +202,30 @@ void DUBS_Data_RX(BASE* This,DBUSDecoding_Type *data)
    if(HAL_CAN_AddTxMessage(hcan,Cbcla.Txm1,Cbcla.Ctrm->txdata,(uint32_t*)CAN_TX_MAILBOX0)==HAL_OK)
   {
      
-		if((HAL_GetTick()-Tc.aa)>5)   Tc.bb= HAL_GetTick()-Tc.aa;
+//		if((HAL_GetTick()-Tc.aa)>5)   Tc.bb= HAL_GetTick()-Tc.aa;
 		
   }
 }
  
+
+/* -------------------------------- begin -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+void FRune(void)
+{
+
+	HAL_UART_Receive(&huart2,groal,2,100);
+	RuneController(groal);
+	
+
+}
+
+void CHUANKOU(void)
+{
+	HAL_UART_Transmit(&huart2,groal,2,100);
+	
+}

@@ -38,4 +38,5 @@ dubus\main.o: ..\User\Chassis.h
 dubus\main.o: ..\User\Driver_DBUS.h
 dubus\main.o: ..\User\base_class.h
 dubus\main.o: ..\User\PanTiltZoom.h
+dubus\main.o: ..\User\GY955.h
 dubus\main.o: ..\User\Controller.h

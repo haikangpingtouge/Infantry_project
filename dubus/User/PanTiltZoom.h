@@ -1,6 +1,7 @@
 #ifndef __PANTILTZOOM_H
 #define __PANTILTZOOM_H
 #include "Driver_DBUS.h"
+#include  "GY955.h"
 // #define PTZ_DATA_INIT  {{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}}  //云台数据初始化
 
 
@@ -9,7 +10,10 @@ typedef struct
 {
 /* ----------------- 声明云台两轴结构体 -------------------- */
    	motor Pitch;
-    motor Yaw; 
+	motor Yaw; 
+	PIDCLASS  PitchSpeel;
+
+	GY955_Class* Gyc;
 
 /* ----------------- 定义云台公有数据 -------------------- */
 	int16_t P; //遥控数据缓存
@@ -31,4 +35,5 @@ void PanTiltZoom_Init(void);
 void PantiltzoomDbusDataConverter(void);
 //int16_t LocalDeadLock(int16_t data,int16_t max,int16_t min);
 static void PIDConnector(uint8_t mode,float p,float i,float d);
+uint8_t RuneController(uint8_t *groal);
 #endif // !__PANTILTZOOM_H

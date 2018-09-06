@@ -15,6 +15,7 @@ extern DMA_HandleTypeDef hdma_usart1_rx;
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart3_rx;
 extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart6;
 extern Chassis_Struct  Cs;  //底盘对象
 extern Pantiltzoom_Struct Ps;	//云台对象
 
@@ -38,12 +39,15 @@ void User_config(void)
 	 PanTiltZoom_Init();       //云台数据初始化 
 	 DBUS_Init();            //遥控参数初始化     
    TimeCounterInit();        //测试时间结构体初始化
+	Gy955ClassDataInit();       //陀螺仪
 
    /* ----------------- 中断开启 -------------------- */
 	HAL_TIM_Base_Start_IT(&htim7);
+	
 	__HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE );//串口1空闲中断使能
-	__HAL_UART_ENABLE_IT(&huart3,UART_IT_IDLE );//串口3空闲中断使能
-  
+	__HAL_UART_ENABLE_IT(&huart6,UART_IT_IDLE );//串口3空闲中断使能
+	
+  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, GPIO_PIN_SET);
 	
 }
 
@@ -71,14 +75,15 @@ void User_usart1_IT(UART_HandleTypeDef *huart)
 	* @retval void
 	**/
 /* -------------------------------- end -------------------------------- */
-void UserUsart3IT(UART_HandleTypeDef *huart)
+void UserUsart6IT(UART_HandleTypeDef *huart)
 {
+
 	__HAL_UART_CLEAR_IDLEFLAG(huart);
-	// if(huart->hdmarx->Instance->NDTR==DBUSBackLength)//接收18字节正确
-	// {
-		
-	// }
-	// HAL_UART_Receive_DMA(huart);//设置接收地址和数据长度
+	if(huart->hdmarx->Instance->NDTR== GY955BACKLEN)//接收18字节正确
+	{
+		 AnalysisGyro();
+	}
+	HAL_UART_Receive_DMA(huart,GB955Buffer,GY955BACKLEN+GY955LEN);//设置接收地址和数据长度
 }
 
 // void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -113,15 +118,15 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 /* -------------------------------- end -------------------------------- */
 void TIM7_Event(void)
 {
-	Tc.aa=HAL_GetTick();
+//	Tc.aa=HAL_GetTick();
 	switch(DBUS_ReceiveData.switch_left)
 	{
 		
 		
 		case 1:	
 		 DUBS_Data_RX(&_base,&DBUS_ReceiveData);//遥控等数据得取
-// 				Ps.PIDConnector(YAW,0,0,0);
-//	Ps.PIDConnector(PITCH,2,0,0);
+// 				Ps.PIDConnector(YAW,-3,0,0);
+//	Ps.PIDConnector(PITCH,-3,-0.1,0);
     PanTiltZoom_Control(&Ps,&hcan1);//云台
 //		Cs.PIDConnector(LB,0.5,0,0);
 //		Cs.PIDConnector(LF,0.5,0,0);
