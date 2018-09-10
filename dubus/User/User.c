@@ -11,6 +11,7 @@
 
 extern CAN_HandleTypeDef hcan1;
 extern TIM_HandleTypeDef htim7;
+extern TIM_HandleTypeDef htim1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart3_rx;
@@ -43,6 +44,8 @@ void User_config(void)
 
    /* ----------------- 中断开启 -------------------- */
 	HAL_TIM_Base_Start_IT(&htim7);
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
 	
 	__HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE );//串口1空闲中断使能
 	__HAL_UART_ENABLE_IT(&huart6,UART_IT_IDLE );//串口3空闲中断使能
@@ -125,17 +128,18 @@ void TIM7_Event(void)
 		
 		case 1:	
 		 DUBS_Data_RX(&_base,&DBUS_ReceiveData);//遥控等数据得取
-// 				Ps.PIDConnector(YAW,-3,0,0);
-//	Ps.PIDConnector(PITCH,-3,-0.1,0);
+// 				Ps.PIDConnector(YAW,-8.5,-0.5,-0.3);
+//	Ps.PIDConnector(PITCH,-9.5,0,0);
     PanTiltZoom_Control(&Ps,&hcan1);//云台
-//		Cs.PIDConnector(LB,0.5,0,0);
-//		Cs.PIDConnector(LF,0.5,0,0);
-//		Cs.PIDConnector(RB,0.5,0,0);
-//		Cs.PIDConnector(RF,0.5,0,0);		
-//   Chassis_Control(&Cs,&hcan1);//底盘
+		Cs.PIDConnector(LB,6,0.1,0);
+		Cs.PIDConnector(LF,6,0.1,0);
+		Cs.PIDConnector(RB,6,0.1,0);
+		Cs.PIDConnector(RF,6,0.1,0);		
+   Chassis_Control(&Cs,&hcan1);//底盘
 //		Tc.bb=HAL_GetTick()-Tc.aa;
 //                              //拨弹
-                            //摩擦轮
+ 		TIM1->CCR3=1000;
+		TIM1->CCR4=1000;
 		
 			break;
 		case 2:
@@ -188,3 +192,6 @@ void BaseClassInit(Chassis_Struct* cs,Pantiltzoom_Struct* ps)
   _base.ConCs=cs;
   _base.ConPs=ps;
 }
+
+
+

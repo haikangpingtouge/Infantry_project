@@ -26,7 +26,8 @@ typedef struct
 }Chassis_Struct;
 
 
-#define MaxWheelSpeed                   2700
+#define MaxWheelSpeed                   8000
+#define ACCELERATIONCOE                 125
 #define LF       0
 #define RF       3
 #define LB       6

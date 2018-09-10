@@ -7,6 +7,9 @@
 #define DBUSLength		18				//DBUS数据帧长
 #define DBUSBackLength	1				//增加一个字节保持稳定
 
+#define XAXIS            0
+#define YAXIS            1
+
 					
 #define KEY_V		0x4000
 #define KEY_C		0x2000
@@ -24,7 +27,18 @@
 #define KEY_S		0x0002
 #define KEY_W		0x0001
 
-
+typedef struct 
+{
+	int  a;  //加速度
+	uint8_t flagw; // w按下标志位
+	uint8_t flags; // s按下标志位
+	uint8_t flagq; // q按下标志位
+	uint8_t flage; // e按下标志位
+	uint8_t flaga; // a按下标志位
+	uint8_t flagd; // d按下标志位
+	uint8_t flagshift; // shift按下标志位
+	
+}AccelerationStructFlag;
 
 //遥控解码数据存储结构体
 typedef struct {
@@ -48,7 +62,8 @@ typedef struct {
 		uint8_t press_right;
         
         uint8_t jumppress_left;
-        uint8_t jumppress_right;
+		uint8_t jumppress_right;
+		
 	}mouse;
 	
 	struct 
@@ -60,6 +75,8 @@ typedef struct {
 		uint16_t key_code;              //原始键值
         uint16_t jumpkey_code;          //跳变后的键值
 	}keyBoard;
+
+	AccelerationStructFlag*  Asf;
 }DBUSDecoding_Type;
 
 //DBUS与遥控连接状态
@@ -70,6 +87,8 @@ typedef enum
 	Bad,
 	Lost
 }DBUSConnectStatus_Type;
+
+
 
 
 #ifdef  __DBUS_GLOBALS
@@ -92,5 +111,9 @@ void DBUS_DataDecoding(void);
 
 extern Time_Counter Tc;
 void TimeCounterInit(void);
+
+uint8_t DBUS_CheckPush(uint16_t Key);//判断按键是否被按下
+uint8_t DBUS_CheckJumpKey(uint16_t Key);//判断键盘是否按下
+uint8_t DBUS_CheckJumpMouse(uint8_t Key);//判断鼠标是否按下
 
 #endif

@@ -2,9 +2,9 @@
 Chassis_Struct  Cs;  //底盘对象
 static float *pid_list[12];
 
-/* -------------------------------- begin -------------------------------- */
+/* -------------------------------- begin 1 -------------------------------- */
 /**
-  * @brief  底盘电机数据解析
+  * @brief  底盘电机数据解析           
   * @param  void
   * @retval void
  **/
@@ -15,7 +15,7 @@ void Chassis_Data_Analysis(motor* RM3508,uint8_t *Data)
     RM3508->real=((int16_t)(Data[2]<<8)|Data[3]);
     RM3508->RealCurrent=((int16_t)(Data[4]<<8)|Data[5]);
 }
-/* -------------------------------- begin -------------------------------- */
+/* -------------------------------- begin 2 -------------------------------- */
 /**
   * @brief  麦轮速度解算
   * @param   Vx x轴速度,  Vy y轴速度,  Wt 角速度, *Speed 传入速度指针
@@ -30,8 +30,8 @@ void MW_TheCalculationSpeed(float Vx, float Vy, float Wt,Chassis_Struct* D)
 {
     uint8_t index;
     Buffer[0] = Vx + Vy + Wt;
-    Buffer[1] = Vx - Vy - Wt;
-    Buffer[2] = Vx - Vy + Wt;
+    Buffer[1] = Vx - Vy + Wt;
+    Buffer[2] = Vx - Vy - Wt;
     Buffer[3] = Vx + Vy - Wt;
 
     for(index = 0, MaxSpeed = 0; index < 4; index++)
@@ -61,7 +61,7 @@ void MW_TheCalculationSpeed(float Vx, float Vy, float Wt,Chassis_Struct* D)
 }
 
 
-/* -------------------------------- begin -------------------------------- */
+/* -------------------------------- begin 3 -------------------------------- */
 /**
   * @brief  底盘电机类初始化
   * @param  void
@@ -74,8 +74,8 @@ void Chassis_init(void)
     Cs.Target_Vx=0;  //遥控数据缓存
     Cs.Target_Vy=0;
     Cs.Target_Wt=0;	//遥控数据缓存
-    Cs.max=1000;          // 限制值
-    Cs.min=-1000;          // 限制值
+    Cs.max=9000;          // 限制值
+    Cs.min=-9000;          // 限制值
     Cs.motor_id=0x200;
 
 
@@ -84,9 +84,9 @@ void Chassis_init(void)
      Cs.chassis_LF.RealCurrent=0;            //实际电流
      Cs.chassis_LF.Real_Angle=0;             //;
      Cs.chassis_LF.pid_out=0;    
-     Cs.chassis_LF.Kp=3.5;             pid_list[0]= &Cs.chassis_LF.Kp; //得到pid参数 
-     Cs.chassis_LF.Ki=0.4;             pid_list[1]= &Cs.chassis_LF.Ki;  
-     Cs.chassis_LF.Kd=0.05;                pid_list[2]= &Cs.chassis_LF.Kd;   
+     Cs.chassis_LF.Kp=6;             pid_list[0]= &Cs.chassis_LF.Kp; //得到pid参数 
+     Cs.chassis_LF.Ki=0.1;             pid_list[1]= &Cs.chassis_LF.Ki;  
+     Cs.chassis_LF.Kd=0;                pid_list[2]= &Cs.chassis_LF.Kd;   
      Cs.chassis_LF.Bise=0;
      Cs.chassis_LF.Last_Bise=0; 
      Cs.chassis_LF.Integral_bias=0;
@@ -99,9 +99,9 @@ void Chassis_init(void)
      Cs.chassis_RF.RealCurrent=0;            //实际电流
      Cs.chassis_RF.Real_Angle=0;             //;
      Cs.chassis_RF.pid_out=0;  
-     Cs.chassis_RF.Kp=3.5;             pid_list[3]= &Cs.chassis_RF.Kp;   
-     Cs.chassis_RF.Ki=0.4;             pid_list[4]= &Cs.chassis_RF.Ki;    
-     Cs.chassis_RF.Kd=0.05;                pid_list[5]=&Cs.chassis_RF.Kd;
+     Cs.chassis_RF.Kp=6;             pid_list[3]= &Cs.chassis_RF.Kp;   
+     Cs.chassis_RF.Ki=0.1;             pid_list[4]= &Cs.chassis_RF.Ki;    
+     Cs.chassis_RF.Kd=0;                pid_list[5]=&Cs.chassis_RF.Kd;
      Cs.chassis_RF.Bise=0;
      Cs.chassis_RF.Last_Bise=0; 
      Cs.chassis_RF.Integral_bias=0;
@@ -115,9 +115,9 @@ void Chassis_init(void)
      Cs.chassis_LB.RealCurrent=0;            //实际电流
      Cs.chassis_LB.Real_Angle=0;             //;
      Cs.chassis_LB.pid_out=0;  
-     Cs.chassis_LB.Kp=3.5;                    pid_list[6]= &Cs.chassis_LB.Kp;   
-     Cs.chassis_LB.Ki=0.4;                    pid_list[7]= &Cs.chassis_LB.Ki;    
-     Cs.chassis_LB.Kd=0.05;                    pid_list[8]= &Cs.chassis_LB.Kd;     
+     Cs.chassis_LB.Kp=6;                    pid_list[6]= &Cs.chassis_LB.Kp;   
+     Cs.chassis_LB.Ki=0.1;                    pid_list[7]= &Cs.chassis_LB.Ki;    
+     Cs.chassis_LB.Kd=0;                    pid_list[8]= &Cs.chassis_LB.Kd;     
      Cs.chassis_LB.Bise=0;
      Cs.chassis_LB.Last_Bise=0; 
      Cs.chassis_LB.Integral_bias=0;
@@ -132,9 +132,9 @@ void Chassis_init(void)
      Cs.chassis_RB.RealCurrent=0;            //实际电流
      Cs.chassis_RB.Real_Angle=0;             //;
      Cs.chassis_RB.pid_out=0;  
-     Cs.chassis_RB.Kp=3.5;             pid_list[9]=  &Cs.chassis_RB.Kp;
-     Cs.chassis_RB.Ki=0.4;             pid_list[10]=  &Cs.chassis_RB.Ki;
-     Cs.chassis_RB.Kd=0.05;                pid_list[11]= &Cs.chassis_RB.Kd;
+     Cs.chassis_RB.Kp=6;             pid_list[9]=  &Cs.chassis_RB.Kp;
+     Cs.chassis_RB.Ki=0.1;             pid_list[10]=  &Cs.chassis_RB.Ki;
+     Cs.chassis_RB.Kd=0;                pid_list[11]= &Cs.chassis_RB.Kd;
      Cs.chassis_RB.Bise=0;
      Cs.chassis_RB.Last_Bise=0; 
      Cs.chassis_RB.Integral_bias=0;
@@ -177,7 +177,7 @@ void Chassis_init(void)
 //    return 0x00;
 //}
 
-/* -------------------------------- begin -------------------------------- */
+/* -------------------------------- begin 4 -------------------------------- */
     /**
     * @brief  
     * @param  
@@ -190,3 +190,102 @@ static void PIDConnector(uint8_t mode,float p,float i,float d)
     *pid_list[mode+1]=i;
     *pid_list[mode+2]=d;
 }
+
+
+ /* -------------------------------- begin 5 -------------------------------- */
+ 	/**
+ 	* @brief  键盘控制底盘运动
+ 	* @param  
+ 	* @retval 
+ 	**/
+ /* -------------------------------- end -------------------------------- */
+// void ChassisInKeyboard()
+// {
+
+//		Cs.Target_Vx = ACCControl(DBUS_CheckPush(XAXIS));
+//		Cs.Target_Vy = 
+
+
+
+
+
+
+
+
+//	 if(DBUS_CheckPush(KEY_W)==1)
+//	 {
+//		Cs.Target_Vx += 50;
+//		Cs.Target_Vy += 50;
+//		Cs.Target_Wt =0;
+//	 }
+//	 else if(DBUS_CheckPush(KEY_S)==1)
+//	 {
+//		Cs.Target_Vx += 50;
+//		Cs.Target_Vy += 50;
+//		Cs.Target_Wt =0;
+//	 }
+//	 else if(DBUS_CheckPush(KEY_A)==1)
+//	 {
+//		Cs.Target_Vx += 0;
+//		Cs.Target_Vy += 0;
+//		Cs.Target_Wt += -50;
+//	 }
+//	 else if(DBUS_CheckPush(KEY_D)==1)
+//	 {
+//		Cs.Target_Vx += 0;
+//		Cs.Target_Vy += 0;
+//		Cs.Target_Wt += 50;
+//	 }
+
+// }
+
+
+///* -------------------------------- begin 6 -------------------------------- */
+//	/**
+//	* @brief  加速
+//	* @param  
+//	* @retval 
+//	**/
+///* -------------------------------- end -------------------------------- */
+//int16_t SpeedUp(int a)
+//{
+//   float vt;
+//   vt = (float)(a*a)/ACCELERATIONCOE; 
+//   if(a>0)
+//		return vt >2000? 2000:vt;
+//   else return -vt < -2000? -2000 : -vt;
+//}
+
+///* -------------------------------- begin 7-------------------------------- */
+//	/**
+//	* @brief  减速
+//	* @param  
+//	* @retval 
+//	**/
+///* -------------------------------- end -------------------------------- */
+//int16_t SpeedCut(int a)
+//{
+//	float vt;
+//	vt = (float) ((a-500)*(a-500))/ACCELERATIONCOE;
+//	if(a>0)
+//	return vt <0? 0:vt;
+//	else return -vt >0 ? 0: -vt;
+//}
+
+///* -------------------------------- begin 8 -------------------------------- */
+//	/**
+//	* @brief  
+//	* @param  
+//	* @retval 
+//	**/
+///* -------------------------------- end -------------------------------- */
+//int16_t ACCControl(uint8_t a)
+//{
+//	
+//	if(DBUS_ReceiveData.Asf->flagw==1)
+//	SpeedUp(a);
+//	else if(DBUS_ReceiveData.Asf->flagwflagw==0)
+//	SpeedCut(a);
+
+
+//}

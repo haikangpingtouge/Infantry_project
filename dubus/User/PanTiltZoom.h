@@ -28,6 +28,18 @@ typedef struct
 #define PITCH   0
 #define YAW     3
 
+#define INFANTRY4CEN_YAW        3960     //四号步兵云台中心值
+#define INFANTRY4CEN_PITCH        2348  //四号步兵云台中心值
+#define INFANTRY4_YAW_LEFT           4600 //四号步兵云台左边最大值
+#define INFATNRY4_YAW_RIGHT          3300    //四号步兵云台右边最大值
+#define INFANTRY4_PITCH_T           2610 //四号步兵云台左边最大值
+#define INFATNRY4_PITCH_B          2260    //四号步兵云台右边最大值
+
+#define INFANTRY1CEN_YAW        4266     //四号步兵云台中心值
+#define INFANTRY1CEN_PITCH        3700  //四号步兵云台中心值
+#define INFANTRY1_YAW_LEFT           4600 //四号步兵云台左边最大值
+#define INFATNRY1_YAW_RIGHT          3300    //四号步兵云台右边最大值
+
 void PTZ_Data_Analysis(motor* RM6623,uint8_t *Data);
 void PanTiltZoom_Init(void);
 //void PTZ_PID_param(uint8_t way);

@@ -1,6 +1,9 @@
 #include "Controller.h"
 extern UART_HandleTypeDef huart2;
-/* -------------------------------- begin -------------------------------- */
+//static int16_t flag;
+ float pmax=0,pmid=0,pmin=0;
+ float ec,Mmax=300,Mmid=100,Mmin=50; //Mmax 为系统误差百分之三十
+/* -------------------------------- begin 1 -------------------------------- */
 /**
   * @brief  PID控制器
   * @param  motor *motor 
@@ -10,13 +13,43 @@ extern UART_HandleTypeDef huart2;
 _PID _PID_Kind;
 void PID_control(motor *motor,uint8_t PID)
 {
+//  if(flag==1)
+//  SUMtarget=motor->Real_Angle;
+//  flag=0;
 
 //float bise=0;
 
     switch(PID)
     {
       case Location_PID:
-	 motor->Bise = motor->target - motor->Real_Angle;
+				 motor->Bise = motor->target - motor->Real_Angle;
+//	  Tbise = motor->target - motor->Real_Angle;
+			
+//	 if(Tbise > 0 && (motor->target>SUMtarget))
+//	 {
+//		SUMtarget+= (int16_t)Tbise*0.05;
+//		if(SUMtarget>motor->target)
+//		{
+//			SUMtarget=motor->target;
+//			flag=1;
+//		}
+//		
+//	 }
+//	 else if(Tbise < 0 && (motor->target<SUMtarget))
+//	 {
+//		SUMtarget+= (int16_t)-Tbise*0.01;
+//		if(SUMtarget > motor->target)
+//		{
+//			SUMtarget=motor->target;
+//			flag=1;
+//		}
+//		
+//	 }
+//	
+//	 motor->Bise= SUMtarget-motor->Real_Angle;
+
+
+
 
 //      motor->Bise=myabs(bise);
 //      bise=8191-motor->Bise;
@@ -49,10 +82,10 @@ void PID_control(motor *motor,uint8_t PID)
 		motor->pid_out = motor->Kp * motor->Bise  + motor->Ki * motor->Integral_bias + motor->Kd * (motor->Bise - motor->Last_Bise);
 		
 		/* ----------------- 减缓响应速度 -------------------- */
-		if(motor->Bise>500||motor->Bise<-500)
-		{
-			motor->pid_out= (int16_t)motor->pid_out/5;
-		}
+//		if(motor->Bise>500||motor->Bise<-500)
+//		{
+//			motor->pid_out= (int16_t)motor->pid_out/3;
+//		}
         motor->Last_Bise = motor->Bise;
       break;
       case Incremental_PID:
@@ -69,10 +102,10 @@ void PID_control(motor *motor,uint8_t PID)
     }
 }
 
-/* -------------------------------- begin -------------------------------- */
+/* -------------------------------- begin 2 -------------------------------- */
 /**
   * @brief  限幅
-  * @param  void
+  * @param  int16_t
   * @retval void
  **/
 /* -------------------------------- end -------------------------------- */
@@ -81,26 +114,102 @@ void Limiter(int16_t *parameter,int16_t max,int16_t min)
   *parameter = *parameter > max ? max:*parameter;
   *parameter = *parameter < min ? min:*parameter;
 }
-
-/* -------------------------------- begin -------------------------------- */
-/**
-  * @brief  模糊控制器
-  * @param  void
-  * @retval void
- **/
+/* -------------------------------- begin 3 -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
 /* -------------------------------- end -------------------------------- */
-// /* -------------------------------- begin -------------------------------- */
-//   /**
-//   * @brief  PID参数修改接口
-//   * @param  
-//   * @retval 
-//   **/
-// /* -------------------------------- end -------------------------------- */
-// void TheInterfacesParameters()
-// {
+uint8_t LimiterUint8(uint8_t parameter,uint8_t max,uint8_t min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
+/* -------------------------------- begin 4 -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+uint16_t LimiterUint16(uint16_t parameter,uint16_t max,uint16_t min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
+/* -------------------------------- begin 5 -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+uint32_t LimiterUint32(uint32_t parameter,uint32_t max,uint32_t min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
+/* -------------------------------- begin 6 -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+int16_t LimiterInt16(int16_t parameter,int16_t max,int16_t min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
+/* -------------------------------- begin 7-------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+int32_t LimiterInt32(int32_t parameter,int32_t max,int32_t min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
+/* -------------------------------- begin 8 -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+int LimiterInt(int parameter,int max,int min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
+/* -------------------------------- begin 9 -------------------------------- */
+	/**
+	* @brief  
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+float LimiterFloat(float parameter,float max,float min)
+{
+	parameter = parameter > max ? max:parameter;
+	parameter = parameter < min ? min:parameter;
+	return parameter;
+}
 
-// }
-/* -------------------------------- begin -------------------------------- */
+
+
+
+/* -------------------------------- begin 10  -------------------------------- */
   /**
   * @brief  此函数用于返回一个数的绝对值
   * @param  要取绝对值的参数a
@@ -113,6 +222,61 @@ float myabs(float a)
     return a<0?(-a):a;
 
 }
+
+
+/* -------------------------------- begin 14  -------------------------------- */
+  /**
+  * @brief  此函数用于返回一个数的绝对值
+  * @param  要取绝对值的参数a
+  * @retval 返回入口参数a的绝对值
+  **/
+/* -------------------------------- end -------------------------------- */
+int16_t absInt16_t(int16_t a)
+{
+
+    return a<0?(-a):a;
+
+}
+/* -------------------------------- begin 15 -------------------------------- */
+  /**
+  * @brief  此函数用于返回一个数的绝对值
+  * @param  要取绝对值的参数a
+  * @retval 返回入口参数a的绝对值
+  **/
+/* -------------------------------- end -------------------------------- */
+int32_t absInt32_t(int32_t a)
+{
+
+    return a<0?(-a):a;
+
+}
+/* -------------------------------- begin 16 -------------------------------- */
+  /**
+  * @brief  此函数用于返回一个数的绝对值
+  * @param  要取绝对值的参数a
+  * @retval 返回入口参数a的绝对值
+  **/
+/* -------------------------------- end -------------------------------- */
+int absInt(int a)
+{
+
+    return a<0?(-a):a;
+
+}
+/* -------------------------------- begin 17 -------------------------------- */
+  /**
+  * @brief  此函数用于返回一个数的绝对值
+  * @param  要取绝对值的参数a
+  * @retval 返回入口参数a的绝对值
+  **/
+/* -------------------------------- end -------------------------------- */
+float absFloat(float a)
+{
+
+    return a<0?(-a):a;
+
+}
+
 
 
 
@@ -189,8 +353,90 @@ void OutPIDControl(int16_t t,int16_t r,Pantiltzoom_Struct* Ps)
 
 	Ps->PitchSpeel.pid_out = Ps->PitchSpeel.P_out+Ps->PitchSpeel.I_out+Ps->PitchSpeel.D_out;
 
-	Limiter(&(Ps->PitchSpeel.pid_out),2000,-2000);
+	Limiter(&(Ps->PitchSpeel.pid_out),5000,-5000);
 
 	Ps->PitchSpeel.Last_Bise=Ps->PitchSpeel.Bise;
+
+}
+
+
+/* -------------------------------- begin -------------------------------- */
+	/**
+	* @brief   专家pid
+	* @param  
+	* @retval 
+	**/
+/* -------------------------------- end -------------------------------- */
+int16_t ExpertPIDControl(motor *motor)
+{
+	static int16_t  pout,dout,iout;
+	
+	
+	motor->Bise = motor->target - motor->Real_Angle;
+	motor->Integral_bias += motor->Bise;
+	motor->Integral_bias = LimiterFloat(motor->Integral_bias,1000,-1000);
+	ec = motor->Bise - motor->Last_Bise;
+   
+	if(absFloat(motor->Bise) > Mmax)
+	{
+		pout = (motor->Kp + pmax) * motor->Bise;  // pmax 使之一次能消除百分之七十的误差
+		motor->pid_out=pout;
+		
+			motor->before_last_bias = motor->Last_Bise;
+	motor->Last_Bise = motor->Bise;
+		return motor->pid_out;
+	}
+	  	 
+	if((motor->Bise*ec) > 0)    //超调后调整
+	{
+		if((absFloat(motor->Bise)) > Mmid) 
+		pout = (motor->Kp + pmid) * motor->Bise;
+		pout = (motor->Kp) * motor->Bise;
+		motor->pid_out= pout;
+		
+			motor->before_last_bias = motor->Last_Bise;
+	motor->Last_Bise = motor->Bise;
+		return motor->pid_out;
+
+	}
+	else if( ( (motor->Bise * motor->Last_Bise) >= 0)||( motor->Bise==0) )    //系统基本稳定
+	{
+		pout = (motor->Kp) * motor->Bise;
+		motor->pid_out= pout;
+		
+			motor->before_last_bias = motor->Last_Bise;
+	motor->Last_Bise = motor->Bise;
+		return motor->pid_out;
+	}
+
+	else if( (motor->Bise * motor->before_last_bias) <0)
+	{
+		if(absFloat(motor->Bise )>Mmin)
+		{
+			pout = (motor->Kp + pmin) * motor->Bise;
+			motor->pid_out= pout;
+			
+				motor->before_last_bias = motor->Last_Bise;
+	motor->Last_Bise = motor->Bise;
+			return motor->pid_out;
+		}
+		
+		if(absFloat(motor->Bise )<Mmin)
+		{
+			pout = (motor->Kp) * motor->Bise;
+			iout = motor->Ki * motor->Integral_bias;
+			dout = motor->Kd * ec; 
+			motor->pid_out=pout+iout+dout;
+			
+				motor->before_last_bias = motor->Last_Bise;
+	motor->Last_Bise = motor->Bise;
+			return motor->pid_out;
+		}
+		
+		
+	}
+		return 0;
+	
+
 
 }

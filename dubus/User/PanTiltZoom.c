@@ -32,7 +32,7 @@ void PanTiltZoom_Init(void)
 /*---------云台公有数据初始化-------------*/
     Ps.Pitch.Bise=0;
     Ps.Pitch.Integral_bias=0;           //云台PID列表初始化
-    Ps.Pitch.Kp=5;                      pid_list[0]=&Ps.Pitch.Kp; 
+    Ps.Pitch.Kp=-30;                      pid_list[0]=&Ps.Pitch.Kp; 
     Ps.Pitch.Ki=0;                      pid_list[1]=&Ps.Pitch.Ki;
     Ps.Pitch.Kd=0;                      pid_list[2]=&Ps.Pitch.Kd;
     Ps.Pitch.Last_Bise=0;
@@ -40,15 +40,15 @@ void PanTiltZoom_Init(void)
     Ps.Pitch.real=0;
     Ps.Pitch.Real_Angle=0;
     Ps.Pitch.RealCurrent=0;
-    Ps.Pitch.target=3700;
+    Ps.Pitch.target=INFANTRY4CEN_PITCH;
     Ps.Pitch.limit=&LtPit;
-	 Ps.Pitch.limit->max=3000;
-	Ps.Pitch.limit->min=-3000;
+	 Ps.Pitch.limit->max=5000;
+	Ps.Pitch.limit->min=-5000;
 	Ps.Pitch.counter= 0;
 
     Ps.Yaw.Bise=0;
     Ps.Yaw.Integral_bias=0;           //云台PID列表初始化
-    Ps.Yaw.Kp=5;                        pid_list[3]=&Ps.Yaw.Kp;
+    Ps.Yaw.Kp=-20;                        pid_list[3]=&Ps.Yaw.Kp;
     Ps.Yaw.Ki=0;                        pid_list[4]=&Ps.Yaw.Ki;
     Ps.Yaw.Kd=0;                        pid_list[5]=&Ps.Yaw.Kd;
     Ps.Yaw.Last_Bise=0;
@@ -56,14 +56,14 @@ void PanTiltZoom_Init(void)
     Ps.Yaw.real=0;
     Ps.Yaw.Real_Angle=0;
     Ps.Yaw.RealCurrent=0;
-    Ps.Yaw.target=4266;
+    Ps.Yaw.target=INFANTRY4CEN_YAW;
 	  Ps.Yaw.limit=&LtYaw;
-    Ps.Yaw.limit->max=3000;
-	Ps.Yaw.limit->min=-3000;
+    Ps.Yaw.limit->max=5000;
+	Ps.Yaw.limit->min=-5000;
 	Ps.Yaw.counter= 0;
 
 	Ps.PitchSpeel.pid_out=0;
-	Ps.PitchSpeel.Kp=0;
+	Ps.PitchSpeel.Kp=-0.75;
 	Ps.PitchSpeel.Ki=0;
 	Ps.PitchSpeel.Kd=0;
 	Ps.PitchSpeel.Bise=0;
@@ -185,8 +185,10 @@ void PTZ_Data_Analysis(motor* RM6623,uint8_t *Data)
 /* -------------------------------- end -------------------------------- */
 void PantiltzoomDbusDataConverter(void)
 {
-    Ps.Pitch.target=Ps.P+3700;
-	Ps.Yaw.target=Ps.Y+4266;
+	Ps.Pitch.target=Ps.P+INFANTRY4CEN_PITCH;
+	Ps.Yaw.target=Ps.Y+INFANTRY4CEN_YAW;
+	Ps.Pitch.target = LimiterInt16(Ps.Pitch.target,INFANTRY4_PITCH_T,INFATNRY4_PITCH_B);
+		Ps.Yaw.target = LimiterInt16(Ps.Yaw.target,INFANTRY4_YAW_LEFT,INFATNRY4_YAW_RIGHT);
 
 }
 
@@ -230,6 +232,13 @@ uint8_t RuneController(uint8_t *groal)
 {
 	Ps.Pitch.target = 3700+((groal[0]-90)*22);
 	Ps.Yaw.target = 4266+((groal[1]-90)*22); 
+	
+		Ps.Pitch.target=Ps.Pitch.target<3800?3800:Ps.Pitch.target;
+	Ps.Pitch.target=Ps.Pitch.target>4300?4300:Ps.Pitch.target;
+	
+	Ps.Yaw.target=Ps.Yaw.target<3500?3500:Ps.Yaw.target;
+	Ps.Yaw.target=Ps.Yaw.target>5100?5100:Ps.Yaw.target;
+	
 
 	return 0;
 }
