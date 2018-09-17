@@ -1,8 +1,10 @@
 #include "Controller.h"
 extern UART_HandleTypeDef huart2;
 //static int16_t flag;
- float pmax=0,pmid=0,pmin=0;
- float ec,Mmax=300,Mmid=100,Mmin=50; //Mmax 为系统误差百分之三十
+ float pmax=-1,pmid=-0.5,pmin=-0.2;
+ float ec,Mmax=550,Mmid=350,Mmin=250,temu; //Mmax 为系统误差百分之三十
+
+
 /* -------------------------------- begin 1 -------------------------------- */
 /**
   * @brief  PID控制器
@@ -280,61 +282,6 @@ float absFloat(float a)
 
 
 
-/* ####################################### end ######################################### */   
-void usart2_send_char(uint8_t c,UART_HandleTypeDef* huart)
-{
-    while(__HAL_UART_GET_FLAG(huart,UART_FLAG_TXE)==0);//等待上一次发送完毕  
-    USART2->DR=c;   
-}
-/* ####################################### begin ####################################### */
-
-/* ####################################### begin ####################################### */
-/**
- * @brief  下位机发送数据给匿名上位机
- * @param / 1、uint8_t 功能字   0xA0~0xAF
- *        / 2、发送数据数组指针 最多24个字节
- *        / 3、发送数组有效区的数据长度
- * @retval void
- **/
-/* ####################################### end ######################################### */
-void usart2_niming_report(uint8_t fun,uint8_t*data,uint8_t len,UART_HandleTypeDef* huart)
-{
-    uint8_t send_buf[32];
-    uint8_t i;
-    if(len>28)return;                                   //最多28字节数据
-    send_buf[len+3]=0;                                  //校验数置零
-    send_buf[0]=0X88;                                   //帧头
-    send_buf[1]=fun;                                    //功能字
-    send_buf[2]=len;                                    //数据长度
-    for(i=0;i<len;i++)send_buf[3+i]=data[i];            //复制数据
-    for(i=0;i<len+3;i++)send_buf[len+3]+=send_buf[i];   //计算校验和
-    for(i=0;i<len+4;i++)usart2_send_char(send_buf[i],huart);  //发送数据到串口1
-}
-/* ####################################### begin ####################################### */
-/**
- * @brief  在匿名上位机调试PID函数
- * @param / 1、uint16_t Target_Angle目标角度
- *        / 2、uint16_t Real_Angle实际角度
- * @retval void
- **/
-/* ####################################### end ######################################### */
-void PID_Debug(int16_t Target,int16_t Real,UART_HandleTypeDef* huart)
-{
-    uint8_t tbuf[4];
-    unsigned char *p;
-    p=(unsigned char *)&Target;
-    tbuf[0]=(unsigned char)(*(p+1));
-    tbuf[1]=(unsigned char)(*(p+0));
-
-    p=(unsigned char *)&Real;
-    tbuf[2]=(unsigned char)(*(p+1));
-    tbuf[3]=(unsigned char)(*(p+0));
-	  p=NULL;
-
-    usart2_niming_report(0XA1,tbuf,4,huart);//自定义帧,0XA2
-}  
-
-
 /* -------------------------------- begin -------------------------------- */
 	/**
 	* @brief  
@@ -344,6 +291,8 @@ void PID_Debug(int16_t Target,int16_t Real,UART_HandleTypeDef* huart)
 /* -------------------------------- end -------------------------------- */
 void OutPIDControl(int16_t t,int16_t r,Pantiltzoom_Struct* Ps)
 {
+
+	
 	Ps->PitchSpeel.Bise = -t-r;
 	Ps->PitchSpeel.Integral_bias += Ps->PitchSpeel.Bise;
 	Ps->PitchSpeel.P_out=Ps->PitchSpeel.Kp*Ps->PitchSpeel.Bise;
@@ -376,18 +325,20 @@ int16_t ExpertPIDControl(motor *motor)
 	motor->Integral_bias += motor->Bise;
 	motor->Integral_bias = LimiterFloat(motor->Integral_bias,1000,-1000);
 	ec = motor->Bise - motor->Last_Bise;
-   
-	if(absFloat(motor->Bise) > Mmax)
+   temu=absFloat(motor->Bise);//测试
+	if(temu > Mmax)
 	{
 		pout = (motor->Kp + pmax) * motor->Bise;  // pmax 使之一次能消除百分之七十的误差
 		motor->pid_out=pout;
 		
 			motor->before_last_bias = motor->Last_Bise;
 	motor->Last_Bise = motor->Bise;
+		
+//			PID_Debug((motor->Kp+pmax),motor->Bise,&huart2);  //打印Kp和骗差
 		return motor->pid_out;
 	}
 	  	 
-	if((motor->Bise*ec) > 0)    //超调后调整
+	if((motor->Bise*ec) > 100)    //超调后调整     由于系统存在跳动，所以存在ec约1的情况
 	{
 		if((absFloat(motor->Bise)) > Mmid) 
 		pout = (motor->Kp + pmid) * motor->Bise;
@@ -396,16 +347,22 @@ int16_t ExpertPIDControl(motor *motor)
 		
 			motor->before_last_bias = motor->Last_Bise;
 	motor->Last_Bise = motor->Bise;
+		
+//		PID_Debug((motor->Kp + pmid) ,motor->Bise,&huart2);       //打印Kp和骗差
 		return motor->pid_out;
 
 	}
 	else if( ( (motor->Bise * motor->Last_Bise) >= 0)||( motor->Bise==0) )    //系统基本稳定
 	{
 		pout = (motor->Kp) * motor->Bise;
-		motor->pid_out= pout;
+				dout = motor->Kd * ec;  
+			motor->pid_out=pout+dout;
+
 		
 			motor->before_last_bias = motor->Last_Bise;
 	motor->Last_Bise = motor->Bise;
+//		
+//		PID_Debug(motor->Kp,motor->Bise,&huart2);       //打印Kp和骗差
 		return motor->pid_out;
 	}
 
@@ -418,6 +375,8 @@ int16_t ExpertPIDControl(motor *motor)
 			
 				motor->before_last_bias = motor->Last_Bise;
 	motor->Last_Bise = motor->Bise;
+			
+//			PID_Debug((motor->Kp + pmin),motor->Bise,&huart2);       //打印Kp和骗差
 			return motor->pid_out;
 		}
 		
@@ -430,13 +389,44 @@ int16_t ExpertPIDControl(motor *motor)
 			
 				motor->before_last_bias = motor->Last_Bise;
 	motor->Last_Bise = motor->Bise;
+//			
+//			PID_Debug(motor->Kp,motor->Bise,&huart2);       //打印Kp和骗差
 			return motor->pid_out;
 		}
 		
 		
 	}
+	
+//	PID_Debug(0,0,&huart2);       //打印Kp和骗差
 		return 0;
 	
 
 
 }
+
+
+// /* -------------------------------- begin 1-------------------------------- */
+// 	/**
+// 	* @brief  IIR 数字滤波器   差分方程
+// 	* @param  
+// 	* @retval 
+// 	**/
+// /* -------------------------------- end -------------------------------- */
+// void IIRfilter(int16_t x[3], int16_t y[3]) 
+// {
+
+
+// 	int i;
+// 	for(i=0;i<4;i++)
+// 	{
+// 		w_x[0]=x[i];
+// 		w_y[0]=(B[0]*w_x[0]+B[1]*w_x[1]+B[2]*w_x[2])*Gain-w_y[1]*A[1]-w_y[2]*A[2];
+// 		y[i]=w_y[0]/A[0];
+// 		w_x[2]=w_x[1];w_x[1]=w_x[0];
+// 		w_y[2]=w_y[1];w_y[1]=w_y[0];
+
+// 	}
+
+	
+// }
+

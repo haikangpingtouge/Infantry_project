@@ -33,4 +33,8 @@ dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 dubus\gy955.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
+dubus\gy955.o: ..\User\DataStructure.h
+dubus\gy955.o: F:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
 dubus\gy955.o: ..\User\Driver_DBUS.h
+dubus\gy955.o: ..\User\niming.h
+dubus\gy955.o: ..\User\Filter.h

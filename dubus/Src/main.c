@@ -84,7 +84,8 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+//extern Pantiltzoom_Struct Ps;	//‘∆Ã®∂‘œÛ
+//unsigned char aaaa[13]= ",v1=10,v2=100";
 /* USER CODE END 0 */
 
 /**

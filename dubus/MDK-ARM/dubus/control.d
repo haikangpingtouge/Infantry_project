@@ -36,6 +36,10 @@ dubus\control.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h
 dubus\control.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h
 dubus\control.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 dubus\control.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
+dubus\control.o: ..\User\DataStructure.h
+dubus\control.o: F:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
+dubus\control.o: ..\User\niming.h
+dubus\control.o: ..\User\Filter.h
 dubus\control.o: ..\User\PanTiltZoom.h
 dubus\control.o: ..\User\GY955.h
 dubus\control.o: ..\User\Controller.h

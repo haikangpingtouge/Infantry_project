@@ -28,6 +28,10 @@
 "dubus\user_can.o"
 "dubus\driver_dbus.o"
 "dubus\gy955.o"
+"dubus\datascope_dp.o"
+"dubus\niming.o"
+"dubus\filter.o"
+"dubus\datastructure.o"
 --library_type=microlib --strict --scatter "dubus\dubus.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

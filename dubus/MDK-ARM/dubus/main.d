@@ -37,6 +37,10 @@ dubus\main.o: ..\User\User_can.h
 dubus\main.o: ..\User\Chassis.h
 dubus\main.o: ..\User\Driver_DBUS.h
 dubus\main.o: ..\User\base_class.h
+dubus\main.o: ..\User\DataStructure.h
+dubus\main.o: F:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
+dubus\main.o: ..\User\niming.h
+dubus\main.o: ..\User\Filter.h
 dubus\main.o: ..\User\PanTiltZoom.h
 dubus\main.o: ..\User\GY955.h
 dubus\main.o: ..\User\Controller.h

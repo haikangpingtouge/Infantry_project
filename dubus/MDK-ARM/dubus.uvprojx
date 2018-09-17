@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4107</DriverSelection>
+            <DriverSelection>4100</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -311,7 +311,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -585,6 +585,41 @@
               <FileName>GY955.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\GY955.h</FilePath>
+            </File>
+            <File>
+              <FileName>DataScope_DP.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\DataScope_DP.C</FilePath>
+            </File>
+            <File>
+              <FileName>niming.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\niming.c</FilePath>
+            </File>
+            <File>
+              <FileName>niming.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\niming.h</FilePath>
+            </File>
+            <File>
+              <FileName>Filter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\Filter.h</FilePath>
+            </File>
+            <File>
+              <FileName>Filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>DataStructure.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\DataStructure.c</FilePath>
+            </File>
+            <File>
+              <FileName>DataStructure.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\DataStructure.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -24,4 +24,6 @@ void CAN_TRANSMIT(CAN_HandleTypeDef* hcan,int STD_ID,int Letter0,int Letter1,int
 
 void FRune(void);
 void CHUANKOU(void);
+
+extern float lowbuffer;
 #endif // !CONTROL_H

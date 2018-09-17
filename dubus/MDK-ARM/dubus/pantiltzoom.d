@@ -34,4 +34,8 @@ dubus\pantiltzoom.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h
 dubus\pantiltzoom.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h
 dubus\pantiltzoom.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 dubus\pantiltzoom.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
+dubus\pantiltzoom.o: ..\User\DataStructure.h
+dubus\pantiltzoom.o: F:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
+dubus\pantiltzoom.o: ..\User\niming.h
+dubus\pantiltzoom.o: ..\User\Filter.h
 dubus\pantiltzoom.o: ..\User\GY955.h

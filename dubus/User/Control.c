@@ -1,9 +1,13 @@
 #include "Control.h"
 extern UART_HandleTypeDef huart2;
+extern SqQueue Gysq;
+extern SqQueue PTZsq;
 Can_Base_Class Cbcla;
 uint8_t groal[2]={90,90};
 int aff=0;
-
+float lowbuffer;
+ int16_t  aaaaaa;
+uint8_t size_2=5;
 /* -------------------------------- begin -------------------------------- */
 /**
   * @brief  云台控制
@@ -93,23 +97,36 @@ void Control_PTZ_PID(Pantiltzoom_Struct* This)
 //    PID_control(&This->Pitch,Location_PID);
 	
 	/* ----------------- 专家Pitch  PID -------------------- */
-		ExpertPIDControl(&This->Pitch);
+		  ExpertPIDControl(&This->Pitch);
+    
    Limiter(&This->Pitch.pid_out,This->Pitch.limit->max,This->Pitch.limit->min);
+	aaaaaa = This->Pitch.pid_out;
    /* ----------------- 外环Yawpid -------------------- */
 
-   PID_Debug(This->Pitch.target,This->Pitch.Real_Angle,&huart2);
+//   PID_Debug(This->Pitch.target,This->Pitch.Real_Angle,&huart2);
 
 //    PID_control(&This->Yaw,Location_PID);
 //	ExpertPIDControl(&This->Yaw);
 		/* ----------------- 专家Yaw  PID -------------------- */
-	ExpertPIDControl(&This->Yaw);
-	  Limiter(&This->Yaw.pid_out,This->Yaw.limit->max,This->Yaw.limit->min);
+//	ExpertPIDControl(&This->Yaw);
+//	  Limiter(&This->Yaw.pid_out,This->Yaw.limit->max,This->Yaw.limit->min);
 //	  PID_Debug(This->Yaw.target,This->Yaw.Real_Angle,&huart2);
 //	  /* ----------------- 内环Pitch pid -------------------- */
-//	  OutPIDControl(This->Pitch.pid_out,This->Gyc->Gyr_y,This);
-//	This->Pitch.pid_out=This->PitchSpeel.pid_out;
-//	  /* ----------------- 内环Yaw PID -------------------- */
+
+		//    lowbuffer=low_filter(This->Gyc->Gyr_y);             //低通滤波
+		lowbuffer = SmoothFilter(This->Gyc->Gyr_y,&Gysq,size_1);//平滑滤波
+//		Debug.i16(lowbuffer,This->Gyc->Gyr_y,&huart2);   //匿名
+
+
+ 
+	  OutPIDControl(This->Pitch.pid_out,lowbuffer,This);
+//	This->Pitch.pid_out = SmoothFilter(This->PitchSpeel.pid_out,&PTZsq,size_2);   //平滑滤波
+This->Pitch.pid_out = low_filter(This->PitchSpeel.pid_out); //低通滤波
+//	Debug.i16(aaaaaa,This->Pitch.pid_out,&huart2);
+	
+////	  /* ----------------- 内环Yaw PID -------------------- */
 //	OutPIDControl(This->Yaw.pid_out,This->Gyc->Gyr_z,This);
+////	This->Pitch.pid_out = low_filter(This->PitchSpeel.pid_out);
 //	This->Yaw.pid_out=This->PitchSpeel.pid_out;
 //	
 	
@@ -191,8 +208,8 @@ void DUBS_Data_RX(BASE* This,DBUSDecoding_Type *data)
 		This->ConCs->Target_Vx = LimiterInt16(This->ConCs->Target_Vx,8000,-8000);
 		This->ConCs->Target_Vy = LimiterInt16(This->ConCs->Target_Vy,8000,-8000);
 		This->ConCs->Target_Wt = LimiterInt16(This->ConCs->Target_Wt,5000,-5000);
-		This->ConPs->P += (int16_t)(-data->ch2)*0.02;
-				This->ConPs->P =LimiterInt16(This->ConPs->P,175,-175);
+		This->ConPs->P += (int16_t)(-data->ch2)*0.01;
+				This->ConPs->P =LimiterInt16(This->ConPs->P,2000,-700);
 				
 /* -------------------------------- 自个模式 -------------------------------- */
 //		This->ConCs->Target_Vx=data->ch4*SpeedParam;

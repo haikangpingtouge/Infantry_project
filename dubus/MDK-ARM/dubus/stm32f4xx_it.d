@@ -38,6 +38,10 @@ dubus\stm32f4xx_it.o: ..\User\User_can.h
 dubus\stm32f4xx_it.o: ..\User\Chassis.h
 dubus\stm32f4xx_it.o: ..\User\Driver_DBUS.h
 dubus\stm32f4xx_it.o: ..\User\base_class.h
+dubus\stm32f4xx_it.o: ..\User\DataStructure.h
+dubus\stm32f4xx_it.o: F:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
+dubus\stm32f4xx_it.o: ..\User\niming.h
+dubus\stm32f4xx_it.o: ..\User\Filter.h
 dubus\stm32f4xx_it.o: ..\User\PanTiltZoom.h
 dubus\stm32f4xx_it.o: ..\User\GY955.h
 dubus\stm32f4xx_it.o: ..\User\Controller.h

@@ -33,3 +33,7 @@ dubus\driver_dbus.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h
 dubus\driver_dbus.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h
 dubus\driver_dbus.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 dubus\driver_dbus.o: ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
+dubus\driver_dbus.o: ..\User\DataStructure.h
+dubus\driver_dbus.o: F:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
+dubus\driver_dbus.o: ..\User\niming.h
+dubus\driver_dbus.o: ..\User\Filter.h

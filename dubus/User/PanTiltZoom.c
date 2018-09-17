@@ -32,9 +32,9 @@ void PanTiltZoom_Init(void)
 /*---------云台公有数据初始化-------------*/
     Ps.Pitch.Bise=0;
     Ps.Pitch.Integral_bias=0;           //云台PID列表初始化
-    Ps.Pitch.Kp=-30;                      pid_list[0]=&Ps.Pitch.Kp; 
+    Ps.Pitch.Kp=-8;                      pid_list[0]=&Ps.Pitch.Kp; 
     Ps.Pitch.Ki=0;                      pid_list[1]=&Ps.Pitch.Ki;
-    Ps.Pitch.Kd=0;                      pid_list[2]=&Ps.Pitch.Kd;
+    Ps.Pitch.Kd=-0.5;                      pid_list[2]=&Ps.Pitch.Kd;
     Ps.Pitch.Last_Bise=0;
     Ps.Pitch.pid_out=0;
     Ps.Pitch.real=0;
@@ -42,13 +42,13 @@ void PanTiltZoom_Init(void)
     Ps.Pitch.RealCurrent=0;
     Ps.Pitch.target=INFANTRY4CEN_PITCH;
     Ps.Pitch.limit=&LtPit;
-	 Ps.Pitch.limit->max=5000;
-	Ps.Pitch.limit->min=-5000;
+	 Ps.Pitch.limit->max=700;
+	Ps.Pitch.limit->min=-700;
 	Ps.Pitch.counter= 0;
 
     Ps.Yaw.Bise=0;
     Ps.Yaw.Integral_bias=0;           //云台PID列表初始化
-    Ps.Yaw.Kp=-20;                        pid_list[3]=&Ps.Yaw.Kp;
+    Ps.Yaw.Kp=0;                        pid_list[3]=&Ps.Yaw.Kp;
     Ps.Yaw.Ki=0;                        pid_list[4]=&Ps.Yaw.Ki;
     Ps.Yaw.Kd=0;                        pid_list[5]=&Ps.Yaw.Kd;
     Ps.Yaw.Last_Bise=0;
@@ -63,9 +63,9 @@ void PanTiltZoom_Init(void)
 	Ps.Yaw.counter= 0;
 
 	Ps.PitchSpeel.pid_out=0;
-	Ps.PitchSpeel.Kp=-0.75;
+	Ps.PitchSpeel.Kp=-0.4;
 	Ps.PitchSpeel.Ki=0;
-	Ps.PitchSpeel.Kd=0;
+	Ps.PitchSpeel.Kd=-9.5;
 	Ps.PitchSpeel.Bise=0;
 	Ps.PitchSpeel.Last_Bise=0;
 	Ps.PitchSpeel.Integral_bias=0;

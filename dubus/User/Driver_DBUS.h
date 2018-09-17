@@ -1,6 +1,9 @@
 #ifndef __DRIVER_DBUS_H
 #define __DRIVER_DBUS_H
 #include "base_class.h"
+#include "niming.h"
+#include "Filter.h"
+
 
 
 //DBUS接收数据帧长度

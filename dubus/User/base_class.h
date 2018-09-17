@@ -2,6 +2,7 @@
 #define __BASE_CLASS_H
 
 #include "stm32f4xx_hal.h"
+#include "DataStructure.h"
 #define FIRST_POWER_UP 1
 
 /*-------------限幅结构体------------*/

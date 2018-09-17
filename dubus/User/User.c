@@ -34,23 +34,25 @@ uint32_t temp;
 void User_config(void)
 {
 	/* ----------------- 用户初始化 -------------------- */
-   BaseClassInit(&Cs,&Ps); //基类初始化
-	User_CAN_Config(&hcan1,&Cbcla); 
-	 Chassis_init();         //底盘数据初始化
-	 PanTiltZoom_Init();       //云台数据初始化 
-	 DBUS_Init();            //遥控参数初始化     
-   TimeCounterInit();        //测试时间结构体初始化
-	Gy955ClassDataInit();       //陀螺仪
+   BaseClassInit(&Cs,&Ps); 				//基类初始化
+   QueueOnit();    						//队列初始化
+   NimingClassInit();  	    			//匿名结构体初始化化
+	User_CAN_Config(&hcan1,&Cbcla); 	//用户can结构体初始化
+	 Chassis_init();       				//底盘数据初始化
+	 PanTiltZoom_Init();     			//云台数据初始化 
+	 DBUS_Init();            			//遥控参数初始化     
+   TimeCounterInit();        			//测试时间结构体初始化
+	Gy955ClassDataInit();       		//陀螺仪数据初始化
 
    /* ----------------- 中断开启 -------------------- */
-	HAL_TIM_Base_Start_IT(&htim7);
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
+	HAL_TIM_Base_Start_IT(&htim7);               //处理中断开启
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);	 //摩擦轮中断开启
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);	 //摩擦轮中断开启
 	
 	__HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE );//串口1空闲中断使能
 	__HAL_UART_ENABLE_IT(&huart6,UART_IT_IDLE );//串口3空闲中断使能
 	
-  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, GPIO_PIN_SET);  //激光开启
 	
 }
 
@@ -127,6 +129,7 @@ void TIM7_Event(void)
 		
 		
 		case 1:	
+		
 		 DUBS_Data_RX(&_base,&DBUS_ReceiveData);//遥控等数据得取
 // 				Ps.PIDConnector(YAW,-8.5,-0.5,-0.3);
 //	Ps.PIDConnector(PITCH,-9.5,0,0);
@@ -135,11 +138,12 @@ void TIM7_Event(void)
 		Cs.PIDConnector(LF,6,0.1,0);
 		Cs.PIDConnector(RB,6,0.1,0);
 		Cs.PIDConnector(RF,6,0.1,0);		
-   Chassis_Control(&Cs,&hcan1);//底盘
+//   Chassis_Control(&Cs,&hcan1);//底盘
 //		Tc.bb=HAL_GetTick()-Tc.aa;
 //                              //拨弹
  		TIM1->CCR3=1000;
 		TIM1->CCR4=1000;
+
 		
 			break;
 		case 2:
@@ -151,6 +155,8 @@ void TIM7_Event(void)
 		Cs.PIDConnector(RF,0,0,0);
 		CAN_TRANSMIT(&hcan1,0x200,0,0,0,0);
 		CAN_TRANSMIT(&hcan1,0x1ff,0,0,0,0);
+		 		TIM1->CCR3=1000;
+		TIM1->CCR4=1000;
 		
 			break;
 	}
