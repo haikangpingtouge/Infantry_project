@@ -1,4 +1,9 @@
 # Infantry_project
+这个工程是旧代码，新工程请看RMproject
+
+
+
+
 
 20180810  新建工程 添加can 串口+dma+空闲中断遥控   
 
