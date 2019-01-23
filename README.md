@@ -1,5 +1,5 @@
 # Infantry_project
-##这个工程是旧代码，新工程请看RMproject
+# 这个工程是旧代码，新工程请看RMproject
 
 
 
